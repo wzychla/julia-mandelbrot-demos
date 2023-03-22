@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+	<script type="text/javascript">
+	        
+        var WJulia = 768;
+        var HJulia = 768;
+        var frame  = 0;
+    
+        var contextJulia;
+        var contextSmall;
+        var pixJulia;
+        var imgdJulia;
+
+        var iStart;
+        var iEnd;
+        var jStart;
+        var jEnd;
+
+        var iDelta;
+        var jDelta;
+        
+        function setInitialScale()
+        {
+            iStart = -1.92;
+            iEnd   = 1.92;
+            jStart = -1.92;
+            jEnd   = 1.92;
+
+            iDelta = (iEnd-iStart)/768;
+            jDelta = (jEnd-jStart)/768;
+
+        }
+
+        function SetupMandel()
+        {	 
+            var elemJulia = document.getElementById('JuliaCanvas');
+            if (elemJulia && elemJulia.getContext)
+            {
+                contextJulia = elemJulia.getContext('2d');
+                if (contextJulia)
+                {
+                    imgdJulia = contextJulia.createImageData(WJulia, HJulia);         
+                    pixJulia = imgdJulia.data;
+                }
+            }
+
+            setInitialScale();
+
+            resetButton.addEventListener('click', setInitialScale );
+
+            elemJulia.addEventListener('click', function(e) {
+                var newI = iStart + e.clientX * iDelta;
+                var newJ = jStart + e.clientY * jDelta;
+
+                iDelta /= 2;
+                jDelta /= 2;
+
+                iStart = newI - (768/2) * iDelta;
+                iEnd   = newI + (768/2) * iDelta;
+                jStart = newJ - (768/2) * jDelta;
+                jEnd   = newJ + (768/2) * jDelta;
+            });
+          
+            /* start */
+            requestAnimationFrame( LoopMandel );
+        }
+                         
+        function LoopMandel()
+        {	 
+            frame++;
+         
+            RysujMandel();	 
+            
+            requestAnimationFrame( LoopMandel );
+        }
+         
+         
+        /* tworzenie bitowego obrazu */
+        function RysujMandel()
+        {
+            /* obliczenia */
+            var wi, wj;
+            var i, j;
+
+            var iterations = 512;
+
+            var px = 0;
+            for (i = iStart, wi = 0; wi < 768; i += iDelta, wi++)
+            {
+                var py = 0;
+                for (j = jStart, wj = 0; wj < 768; j += jDelta, wj++)
+                {
+                    var c = 0;
+
+                    var x = 0;
+                    var y = 0;
+         
+                    while (((x*x + y*y) < 4) && (c < iterations))
+                    {
+                        [x, y] = [x * x - y * y + i, 2 * x * y + j];
+                        c++;
+                    }
+
+                    //SetPixelColor( pixJulia, (py * WJulia + px) << 2, 255, 255-(c/2), 255-(c/2), 255 - (c/4) );
+                    SetPixelColor( pixJulia, (py * WJulia + px) << 2, 255, 255-c/2, 255-(c/2), 255 - (c/4) );
+                                        
+                    py++;
+                }
+         
+                px++;
+            }
+            
+            /* kopiowanie bitowego obrazu do context/canvas */
+            contextJulia.putImageData(imgdJulia, 0, 0);		 
+
+            iStartLabel.value = iStart;
+            iEndLabel.value   = iEnd;
+            jStartLabel.value = jStart;
+            jEndLabel.value   = jEnd;
+        }
+         
+        function SetPixelColor(pix,offs, a, r, g, b)
+        {            
+            pix[offs++] = r;
+            pix[offs++] = g;
+            pix[offs++] = b;
+            pix[offs] = a;
+        }
+         
+        window.addEventListener( 'load', SetupMandel );
+        
+        </script>    
+</head>
+<body>
+    <div>
+        <button style="width: 350px" id="resetButton">Reset</button>
+    </div>
+    <div>
+        X: <input style="width:150px" id="iStartLabel"><input style="width:150px" id="iEndLabel">
+    </div>
+    <div>
+        Y: <input style="width:150px" id="jStartLabel"><input style="width:150px" id="jEndLabel">
+    </div>
+    <canvas id="JuliaCanvas" width="768" height="768">
+	</canvas>
+</body>
+</html>
