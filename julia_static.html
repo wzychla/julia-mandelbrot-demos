@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+	<script type="text/javascript">
+	
+        var cx = 0, cy = 0, kat1 = 0, kat2 = 1;
+        
+        var WJulia = 768;
+        var HJulia = 768;
+        var frame  = 0;
+    
+        var contextJulia;
+        var contextSmall;
+        var pixJulia;
+        var imgdJulia;
+        
+        function SetupJulia()
+        {	 
+            var elemJulia = document.getElementById('JuliaCanvas');
+            if (elemJulia && elemJulia.getContext)
+            {
+                contextJulia = elemJulia.getContext('2d');
+                if (contextJulia)
+                {
+                    imgdJulia = contextJulia.createImageData(WJulia, HJulia);         
+                    pixJulia = imgdJulia.data;
+                }
+            }
+
+            refreshButton.addEventListener('click', function() {
+                cx = +txtcx.value;
+                cy = +txtcy.value;
+            });  
+            txtcx.value = cx;
+            txtcy.value = cy;
+          
+            /* start */
+            requestAnimationFrame( LoopJulia );
+        }
+                         
+        function LoopJulia()
+        {	 
+            frame++;
+         
+            RysujJulie();	 
+            
+            requestAnimationFrame( LoopJulia );
+        }
+         
+         
+        /* tworzenie bitowego obrazu */
+        function RysujJulie()
+        {
+            /* obliczenia */
+            var px = 0;
+            for (var i = -1.92; i < 1.92; i = i + 0.005)
+            {
+                var py = 0;
+                for (var j = -1.92; j < 1.92; j = j + 0.005)
+                {
+                    var c = 0;
+
+                    var x = i;
+                    var y = j;
+         
+                    while (((x*x + y*y) < 4) && (c < 31))
+                    {
+                        // (a + bi)^2 = a^2 + 2abi - b^2
+                        [x, y] = [x * x - y * y + cx, 2 * x * y + cy];
+                        c++;
+                    }
+
+                    SetPixelColor( pixJulia, (py * WJulia + px) << 2, 255, 255-(8*c), 255-(6 * c), 255 - c );
+                                        
+                    py++;
+                }
+         
+                px++;
+            }
+            
+            /* kopiowanie bitowego obrazu do context/canvas */
+            contextJulia.putImageData(imgdJulia, 0, 0);		             
+        }
+         
+        function SetPixelColor(pix,offs, a, r, g, b)
+        {            
+            pix[offs++] = r;
+            pix[offs++] = g;
+            pix[offs++] = b;
+            pix[offs] = a;
+        }
+         
+        window.addEventListener( 'load', SetupJulia );
+        
+        </script>    
+</head>
+<body>
+    <div style="width: 600px">
+        <div style="clear:both">re [-2,2]:<input type="text" id="txtcx" type="number" step="0.001" min="-2" max="2" style="width:450px; float:right" /> (editable)</div>
+        <div style="clear:both">im [-2,2]:<input type="text" id="txtcy" type="number" step="0.001" min="-2" max="2" style="width:450px; float:right" /> (editable)</div>        
+        <button id="refreshButton" style="width: 100%">Refresh image</button>
+    </div>
+    <canvas id="JuliaCanvas" width="768" height="768">
+	</canvas>
+</body>
+</html>
