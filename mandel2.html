@@ -54,8 +54,11 @@
             resetButton.addEventListener('click', setInitialScale );
 
             elemJulia.addEventListener('click', function(e) {
-                var newI = iStart + e.clientX * iDelta;
-                var newJ = jStart + e.clientY * jDelta;
+
+                var rect = elemJulia.getBoundingClientRect();
+
+                var newI = iStart + (e.clientX-rect.left) * iDelta;
+                var newJ = jStart + (e.clientY-rect.top) * jDelta;
 
                 iDelta /= 2;
                 jDelta /= 2;
@@ -72,8 +75,8 @@
                          
         function LoopMandel()
         {	 
-            kat1 += 0.0031;
-            kat2 += 0.0059;
+            kat1 += 0.0021;
+            kat2 += 0.0039;
             cx = .681 * Math.sin(kat1);
             cy = .626 * Math.cos(kat2);
 
@@ -145,10 +148,10 @@
         <button style="width: 350px" id="resetButton">Reset</button>
     </div>
     <div>
-        X: <input style="width:150px" id="iStartLabel"><input style="width:150px" id="iEndLabel">
+        X: <input style="width:150px" id="iStartLabel" readonly="readonly" /><input style="width:150px" id="iEndLabel" readonly="readonly" />
     </div>
     <div>
-        Y: <input style="width:150px" id="jStartLabel"><input style="width:150px" id="jEndLabel">
+        Y: <input style="width:150px" id="jStartLabel" readonly="readonly" /><input style="width:150px" id="jEndLabel" readonly="readonly" />
     </div>
     <canvas id="JuliaCanvas" width="768" height="768">
 	</canvas>
