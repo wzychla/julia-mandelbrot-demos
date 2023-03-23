@@ -82,8 +82,8 @@
                          
         function LoopMandel()
         {	 
-            kat1 += 0.0021;
-            kat2 += 0.0039;
+            kat1 += 0.0031;
+            kat2 += 0.0059;
             cx = .681 * Math.sin(kat1);
             cy = .626 * Math.cos(kat2);
 
@@ -121,8 +121,24 @@
                         c++;
                     }
 
-                    SetPixelColor( pixJulia, (py * WJulia + px) << 2, 255, 255-(c*4), 255-(c*4), 255 - (c*2) );
-                                        
+                    if ( x > 0 && y > 0 ) {
+                        // y
+                        SetPixelColor( pixJulia, (py * WJulia + px) << 2, 
+                          255, 64+3*c, 4*c, 4*c );
+                    } else if ( x > 0 && y <= 0) {
+                        // g
+                        SetPixelColor( pixJulia, (py * WJulia + px) << 2, 
+                          255, 4*c, 64+3*c, 4*c );
+                    } else if ( x < 0 && y > 0 ) {
+                        // r
+                        SetPixelColor( pixJulia, (py * WJulia + px) << 2, 
+                          255, 4*c, 4*c, 64+3*c );
+                    } else {
+                        // b
+                        SetPixelColor( pixJulia, (py * WJulia + px) << 2, 
+                          255, 64+3*c, 64+3*c, 4*c );
+                    }
+
                     py++;
                 }
          
@@ -155,10 +171,10 @@
         <button style="width: 350px" id="resetButton">Reset</button>
     </div>
     <div>
-        X: <input style="width:150px" id="iStartLabel" readonly="readonly" /><input style="width:150px" id="iEndLabel" readonly="readonly" />
+        X: <input style="width:150px" id="iStartLabel"><input style="width:150px" id="iEndLabel">
     </div>
     <div>
-        Y: <input style="width:150px" id="jStartLabel" readonly="readonly" /><input style="width:150px" id="jEndLabel" readonly="readonly" />
+        Y: <input style="width:150px" id="jStartLabel"><input style="width:150px" id="jEndLabel">
     </div>
     <canvas id="JuliaCanvas" width="768" height="768">
 	</canvas>
