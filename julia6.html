@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Julia</title>
+    <link rel="stylesheet" href="index.css">
+    <!-- https://github.com/lxsmnsyc/fast-complex -->
+    <script src="https://cdn.jsdelivr.net/npm/rx-cancellable/dist/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/rx-scheduler/dist/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fast-complex/dist/index.min.js"></script>
+    <script type="module">
+	
+        var cx = 0, cy = 0, kat1 = 0, kat2 = 0;
+        
+        var WJulia = 768;
+        var HJulia = 768;
+        var frame  = 0;
+    
+        var contextJulia;
+        var contextSmall;
+        var pixJulia;
+        var imgdJulia;
+        
+        function SetupJulia()
+        {	 
+            var elemJulia = document.getElementById('JuliaCanvas');
+            if (elemJulia && elemJulia.getContext)
+            {
+                contextJulia = elemJulia.getContext('2d');
+                if (contextJulia)
+                {
+                    imgdJulia = contextJulia.createImageData(WJulia, HJulia);         
+                    pixJulia = imgdJulia.data;
+                }
+            }
+          
+            /* start */
+            requestAnimationFrame( LoopJulia );
+        }
+                         
+        function LoopJulia()
+        {	 
+            kat1 += 0.0731;
+            kat2 += 0.0759;
+            cx = .681 * Math.sin(kat1);
+            cy = .626 * Math.cos(kat2);
+            frame++;
+         
+            RysujJulie();	 
+            
+            requestAnimationFrame( LoopJulia );
+        }
+         
+         
+        /* tworzenie bitowego obrazu */
+        function RysujJulie()
+        {
+            /* obliczenia */
+            var px = 0;
+            for (var i = -1.92; i < 1.92; i = i + 0.005)
+            {
+                var py = 0;
+                for (var j = -1.92; j < 1.92; j = j + 0.005)
+                {
+                    var c = 0;
+
+                    var x = [i, j];
+         
+                    while ( Complex.abs(x) < 4 && (c < 31))
+                    {
+                        // (1-x^2+x^5/(2+4x)) + c
+                        x = 
+                            Complex.add(
+                                Complex.add(
+                                    Complex.sub(
+                                        [1,0], 
+                                        Complex.pow(x, 2)
+                                    ),
+                                    Complex.div(
+                                        Complex.pow(x, 5),
+                                        Complex.add(2, Complex.mul(x, 4))
+                                    )
+                                ),
+                                [cx, cy] );
+                        c++;
+                    }
+
+                    SetPixelColor( pixJulia, (py * WJulia + px) << 2, 255, 255-(8*c), 255-(6 * c), 255 - c );
+                                        
+                    py++;
+                }
+         
+                px++;
+            }
+            
+            /* kopiowanie bitowego obrazu do context/canvas */
+            contextJulia.putImageData(imgdJulia, 0, 0);		 
+            
+            txtcx.value = cx;
+		    txtcy.value = cy;            
+        }
+         
+        function SetPixelColor(pix,offs, a, r, g, b)
+        {            
+            pix[offs++] = r;
+            pix[offs++] = g;
+            pix[offs++] = b;
+            pix[offs] = a;
+        }
+         
+        window.addEventListener( 'load', SetupJulia );
+        
+        </script>    
+</head>
+<body>
+    <div>
+        <a href="index.html">back</a>
+    </div>
+    <div>
+        <div style="width:768px; clear:both">re:<input type="text" id="txtcx" style="float : right; width:730px;" readonly="readonly" /></div>
+        <div style="width:768px; clear:both">im:<input type="text" id="txtcy" style="float : right; width:730px;" readonly="readonly" /></div>        
+    </div>
+    <canvas id="JuliaCanvas" width="768" height="768">
+	</canvas>
+</body>
+</html>
