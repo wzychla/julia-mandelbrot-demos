@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Julia</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #julia {
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+	<script type="text/javascript">
+	
+        var cx = 0, cy = 0, kat1 = 0, kat2 = 1;
+        
+        var WJulia = 80;
+        var HJulia = 80;
+                                                       
+        /* tworzenie obrazu */
+        function RysujJulie()
+        {
+            /* obliczenia */
+            for (var i = -2.0; i < 2.0; i = i + 0.16) // 25 lines
+            {
+                var line = '';
+                for (var j = -2.0; j < 2.0; j = j + 0.05) // 80 columns
+                {
+                    var c = 0;
+
+                    var x = i;
+                    var y = j;
+         
+                    while (((x*x + y*y) < 2) && (c < 31))
+                    {
+                        // (a + bi)^2 = a^2 + 2abi - b^2
+                        [x, y] = [x * x - y * y, 2 * x * y];
+                        c++;
+                    }
+
+                    // # or '_'
+                    line += ( c<31 ? '_' : '#');                                        
+                }
+         
+                julia.innerHTML += line + '<br/>';
+            }            
+        }        
+         
+        window.addEventListener( 'load', RysujJulie );
+        
+        </script>    
+</head>
+<body>
+    <div>
+        <a href="index.html">back</a>
+    </div>
+    <div id="julia">
+
+    </div>
+</body>
+</html>
