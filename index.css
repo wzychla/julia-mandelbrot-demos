@@ -1,0 +1,49 @@
+html, body {
+    height: 100%;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4f4f4;
+    font-family: sans-serif;
+}
+
+.large-text {
+    font-size: 2rem;
+}
+
+.hex1 {
+    background: #00a181;
+    clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
+    position: absolute;
+    top: 20px;
+    right: 100px;
+    width: 350px;
+    height: 350px;
+    z-index: -1;
+}
+.hex2 {
+    background: #004651;
+    clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
+    position: absolute;
+    top: 200px;
+    right: -150px;
+    width: 550px;
+    height: 550px;
+}
+.hex3 {
+    background: #A4E473;
+    clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
+    position: absolute;
+    top: 500px;
+    right: 400px;
+    width: 200px;
+    height: 200px;
+    z-index: -1;
+}
+
+#julia {
+    font-family: 'Courier New', Courier, monospace;
+}
